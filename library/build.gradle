@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.ome450901'
+group = 'com.github.smartnsoft'
 
 android {
     compileSdkVersion 27
@@ -9,7 +9,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 1
-        versionName "1.0"
+        versionName "1.7.0-SNAPSHOT"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -23,6 +23,6 @@ android {
 }
 
 dependencies {
-    annotationProcessor 'com.android.tools:annotations:26.1.2'
+    annotationProcessor 'com.android.tools:annotations:26.1.3'
     implementation 'com.android.support:appcompat-v7:27.1.1'
 }

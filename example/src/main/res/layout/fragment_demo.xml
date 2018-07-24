@@ -32,7 +32,7 @@
         app:srb_starWidth="35dp"
         app:srb_starHeight="35dp"
         app:srb_starPadding="5dp"
-        app:srb_numStars="7"
+        app:srb_numStars="5"
         app:srb_rating="2.5"/>
 
     <TextView

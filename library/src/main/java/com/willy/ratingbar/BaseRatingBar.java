@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -45,7 +46,7 @@ public class BaseRatingBar extends LinearLayout implements SimpleRatingBar {
     private boolean mIsIndicator = false;
     private boolean mIsScrollable = true;
     private boolean mIsClickable = true;
-    private boolean mClearRatingEnabled = true;
+    private boolean mClearRatingEnabled = false;
 
     private float mStartX;
     private float mStartY;
@@ -56,11 +57,13 @@ public class BaseRatingBar extends LinearLayout implements SimpleRatingBar {
     private Drawable mFilledDrawable;
     private Drawable mFilledDrawableFirst;
     private Drawable mFilledDrawableLast;
+    private List<Drawable> mCustomFilledDrawableList = new ArrayList<>();
+    private List<Drawable> mCustomEmptyDrawableList = new ArrayList<>();
 
     private OnRatingChangeListener mOnRatingChangeListener;
     private OnRatingDoneListener mOnRatingDoneListener;
 
-    protected List<PartialView> mPartialViews;
+    protected final List<PartialView> mPartialViews = new ArrayList<>();
 
     public BaseRatingBar(Context context) {
         this(context, null);
@@ -151,7 +154,16 @@ public class BaseRatingBar extends LinearLayout implements SimpleRatingBar {
     }
 
     private void initRatingView() {
-        mPartialViews = new ArrayList<>();
+        mPartialViews.clear();
+
+        if (mNumStars > 0 && mCustomEmptyDrawableList.size() == mNumStars && mCustomFilledDrawableList.size() == mNumStars){
+          for (int i = 0; i <= mNumStars; i++) {
+            PartialView partialView = getPartialView(i, mStarWidth, mStarHeight, mPadding, mCustomFilledDrawableList.get(i), mCustomEmptyDrawableList.get(i));
+            addView(partialView);
+            mPartialViews.add(partialView);
+          }
+          return;
+        }
 
         // Add first partial view
         PartialView firstPartialView = getPartialView(1, mStarWidth, mStarHeight, mPadding, mFilledDrawableFirst, mEmptyDrawableFirst);
@@ -162,7 +174,6 @@ public class BaseRatingBar extends LinearLayout implements SimpleRatingBar {
         for (int i = 2; i < mNumStars; i++) {
             PartialView partialView = getPartialView(i, mStarWidth, mStarHeight, mPadding, mFilledDrawable, mEmptyDrawable);
             addView(partialView);
-
             mPartialViews.add(partialView);
         }
 
@@ -171,6 +182,27 @@ public class BaseRatingBar extends LinearLayout implements SimpleRatingBar {
             PartialView lastPartialView = getPartialView(mNumStars, mStarWidth, mStarHeight, mPadding, mFilledDrawableLast, mEmptyDrawableLast);
             addView(lastPartialView);
             mPartialViews.add(lastPartialView);
+        }
+    }
+
+    private void setLastPartialView()
+    {
+        setPartialViewDrawable(mPartialViews.size() - 1, mEmptyDrawableLast, mFilledDrawableLast);
+    }
+
+    private void setFirstPartialView()
+    {
+        setPartialViewDrawable(0, mEmptyDrawableFirst, mFilledDrawableFirst);
+    }
+
+    private void setPartialViewDrawable(int position, Drawable emptyDrawable, Drawable filledDrawable)
+    {
+        if (mPartialViews.size() > 0)
+        {
+          final PartialView partialView = mPartialViews.get(position);
+          partialView.setEmptyDrawable(emptyDrawable);
+          partialView.setFilledDrawable(filledDrawable);
+          invalidate();
         }
     }
 
@@ -316,6 +348,8 @@ public class BaseRatingBar extends LinearLayout implements SimpleRatingBar {
     @Override
     public void setEmptyDrawable(Drawable drawable) {
         mEmptyDrawable = drawable;
+        mCustomEmptyDrawableList.clear();
+        mCustomFilledDrawableList.clear();
 
         for (PartialView partialView : mPartialViews) {
             partialView.setEmptyDrawable(drawable);
@@ -325,9 +359,88 @@ public class BaseRatingBar extends LinearLayout implements SimpleRatingBar {
     @Override
     public void setFilledDrawable(Drawable drawable) {
         mFilledDrawable = drawable;
+        mCustomEmptyDrawableList.clear();
+        mCustomFilledDrawableList.clear();
 
         for (PartialView partialView : mPartialViews) {
             partialView.setFilledDrawable(drawable);
+        }
+    }
+
+    public void setEmptyDrawableFirst(Drawable drawable)
+    {
+        mEmptyDrawableFirst = drawable;
+        mCustomEmptyDrawableList.clear();
+        mCustomFilledDrawableList.clear();
+        setFirstPartialView();
+    }
+
+    public void setFilledDrawableFirst(Drawable drawable)
+    {
+        mFilledDrawableFirst = drawable;
+        mCustomEmptyDrawableList.clear();
+        mCustomFilledDrawableList.clear();
+        setFirstPartialView();
+    }
+
+    public void setEmptyDrawableLast(Drawable drawable)
+    {
+        mEmptyDrawableLast = drawable;
+        mCustomEmptyDrawableList.clear();
+        mCustomFilledDrawableList.clear();
+        setLastPartialView();
+    }
+
+    public void setFilledDrawableLast(Drawable drawable)
+    {
+        mFilledDrawableLast = drawable;
+        mCustomEmptyDrawableList.clear();
+        mCustomFilledDrawableList.clear();
+        setLastPartialView();
+    }
+
+    public void setCustomEmptyRatingDrawable(@IntRange(from = 0) int position, @NonNull Drawable drawable)
+    {
+        if(position >= 0 && position < mNumStars) {
+            if(mNumStars > mCustomEmptyDrawableList.size()) {
+              for (int i = 0; i < mNumStars; i++)
+              {
+                mCustomEmptyDrawableList.add(mEmptyDrawable);
+              }
+            }
+            mCustomEmptyDrawableList.set(position, drawable);
+
+            final Drawable filledDrawable;
+            if (mCustomFilledDrawableList.size() >= mNumStars) {
+              filledDrawable = mCustomFilledDrawableList.get(position);
+            }
+            else {
+              filledDrawable = mFilledDrawable;
+            }
+
+            setPartialViewDrawable(position, drawable, filledDrawable);
+        }
+    }
+
+    public void setCustomFilledRatingDrawable(@IntRange(from = 0) int position, @NonNull Drawable drawable)
+    {
+        if(position >= 0 && position < mNumStars) {
+            if(mNumStars > mCustomFilledDrawableList.size()) {
+              for (int i = 0; i < mNumStars; i++)
+              {
+                mCustomFilledDrawableList.add(mFilledDrawable);
+              }
+            }
+            mCustomFilledDrawableList.set(position, drawable);
+
+            final Drawable emptyDrawable;
+            if (mCustomEmptyDrawableList.size() >= mNumStars) {
+              emptyDrawable = mCustomEmptyDrawableList.get(position);
+            }
+            else {
+              emptyDrawable = mEmptyDrawable;
+            }
+            setPartialViewDrawable(position, emptyDrawable, drawable);
         }
     }
 

@@ -3,6 +3,7 @@ package com.willy.example;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +45,12 @@ public class DemoFragment extends Fragment {
                 Log.d(TAG, "BaseRatingBar onRatingDone: " + rating);
             }
         });
+
+        baseRatingBar.setCustomFilledRatingDrawable(0, ContextCompat.getDrawable(getContext(), R.drawable.filled2));
+        baseRatingBar.setCustomEmptyRatingDrawable(0, ContextCompat.getDrawable(getContext(), R.drawable.empty2));
+
+        baseRatingBar.setCustomFilledRatingDrawable(4, ContextCompat.getDrawable(getContext(), R.drawable.filled2));
+        baseRatingBar.setCustomEmptyRatingDrawable(4, ContextCompat.getDrawable(getContext(), R.drawable.empty2));
 
         scaleRatingBar.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
             @Override
