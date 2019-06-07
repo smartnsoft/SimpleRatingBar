@@ -1,5 +1,6 @@
 package com.willy.example;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -32,22 +33,10 @@ public class DemoFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final BaseRatingBar baseRatingBar = (BaseRatingBar) view.findViewById(R.id.baseratingbar_main);
-        final ScaleRatingBar scaleRatingBar = (ScaleRatingBar) view.findViewById(R.id.scaleRatingBar);
-        final RotationRatingBar rotationRatingBar = (RotationRatingBar) view.findViewById(R.id.rotationratingbar_main);
+        final BaseRatingBar baseRatingBar = view.findViewById(R.id.baseratingbar_main);
+        final ScaleRatingBar scaleRatingBar = view.findViewById(R.id.scaleRatingBar);
+        final RotationRatingBar rotationRatingBar = view.findViewById(R.id.rotationratingbar_main);
         baseRatingBar.setClearRatingEnabled(false);
-        baseRatingBar.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
-          @Override
-          public void onRatingChange(BaseRatingBar ratingBar, float rating, boolean fromUser) {
-            Log.d(TAG, "BaseRatingBar onRatingChange: " + rating);
-          }
-        });
-        baseRatingBar.setOnRatingDoneListener(new BaseRatingBar.OnRatingDoneListener() {
-          @Override
-          public void onRatingDone(float rating) {
-            Log.d(TAG, "BaseRatingBar onRatingDone: " + rating);
-          }
-        });
 
         baseRatingBar.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
             @Override
@@ -72,30 +61,30 @@ public class DemoFragment extends Fragment {
         scaleRatingBar.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
           @Override
           public void onRatingChange(BaseRatingBar ratingBar, float rating, boolean fromUser) {
-            Log.d(TAG, "BaseRatingBar onRatingChange: " + rating);
+            Log.d(TAG, "ScaleRatingBar onRatingChange: " + rating);
           }
         });
         scaleRatingBar.setOnRatingDoneListener(new OnRatingDoneListener() {
           @Override
           public void onRatingDone(float rating) {
-            Log.d(TAG, "BaseRatingBar onRatingDone: " + rating);
+            Log.d(TAG, "ScaleRatingBar onRatingDone: " + rating);
           }
         });
 
         rotationRatingBar.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
           @Override
           public void onRatingChange(BaseRatingBar ratingBar, float rating, boolean fromUser) {
-            Log.d(TAG, "BaseRatingBar onRatingChange: " + rating);
+            Log.d(TAG, "RotationRatingBar onRatingChange: " + rating);
           }
         });
         rotationRatingBar.setOnRatingDoneListener(new OnRatingDoneListener() {
           @Override
           public void onRatingDone(float rating) {
-            Log.d(TAG, "BaseRatingBar onRatingDone: " + rating);
+            Log.d(TAG, "RotationRatingBar onRatingDone: " + rating);
           }
         });
 
-        Button addRatingButton = (Button) view.findViewById(R.id.button_main_add_rating);
+        Button addRatingButton = view.findViewById(R.id.button_main_add_rating);
         addRatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,5 +98,10 @@ public class DemoFragment extends Fragment {
                 rotationRatingBar.setRating(currentRating + 0.25f);
             }
         });
+
+        final ObjectAnimator anim = ObjectAnimator.ofFloat(scaleRatingBar, "rating", 5f, 1f, 5f);
+        anim.setDuration(1000);
+        anim.setStartDelay(500);
+        anim.start();
     }
 }
