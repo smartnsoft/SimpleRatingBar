@@ -9,8 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RatingBar;
+import android.widget.RatingBar.OnRatingBarChangeListener;
 
 import com.willy.ratingbar.BaseRatingBar;
+import com.willy.ratingbar.BaseRatingBar.OnRatingChangeListener;
 import com.willy.ratingbar.BaseRatingBar.OnRatingDoneListener;
 import com.willy.ratingbar.RotationRatingBar;
 import com.willy.ratingbar.ScaleRatingBar;
@@ -34,8 +37,21 @@ public class DemoFragment extends Fragment {
         final RotationRatingBar rotationRatingBar = (RotationRatingBar) view.findViewById(R.id.rotationratingbar_main);
         baseRatingBar.setClearRatingEnabled(false);
         baseRatingBar.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
+          @Override
+          public void onRatingChange(BaseRatingBar ratingBar, float rating, boolean fromUser) {
+            Log.d(TAG, "BaseRatingBar onRatingChange: " + rating);
+          }
+        });
+        baseRatingBar.setOnRatingDoneListener(new BaseRatingBar.OnRatingDoneListener() {
+          @Override
+          public void onRatingDone(float rating) {
+            Log.d(TAG, "BaseRatingBar onRatingDone: " + rating);
+          }
+        });
+
+        baseRatingBar.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
             @Override
-            public void onRatingChange(BaseRatingBar ratingBar, float rating) {
+            public void onRatingChange(BaseRatingBar ratingBar, float rating, boolean fromUser) {
                 Log.d(TAG, "BaseRatingBar onRatingChange: " + rating);
             }
         });
@@ -52,30 +68,31 @@ public class DemoFragment extends Fragment {
         baseRatingBar.setCustomFilledRatingDrawable(4, ContextCompat.getDrawable(getContext(), R.drawable.filled2));
         baseRatingBar.setCustomEmptyRatingDrawable(4, ContextCompat.getDrawable(getContext(), R.drawable.empty2));
 
+
         scaleRatingBar.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
-            @Override
-            public void onRatingChange(BaseRatingBar ratingBar, float rating) {
-                Log.d(TAG, "BaseRatingBar onRatingChange: " + rating);
-            }
+          @Override
+          public void onRatingChange(BaseRatingBar ratingBar, float rating, boolean fromUser) {
+            Log.d(TAG, "BaseRatingBar onRatingChange: " + rating);
+          }
         });
         scaleRatingBar.setOnRatingDoneListener(new OnRatingDoneListener() {
-            @Override
-            public void onRatingDone(float rating) {
-                Log.d(TAG, "BaseRatingBar onRatingDone: " + rating);
-            }
+          @Override
+          public void onRatingDone(float rating) {
+            Log.d(TAG, "BaseRatingBar onRatingDone: " + rating);
+          }
         });
 
         rotationRatingBar.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
-            @Override
-            public void onRatingChange(BaseRatingBar ratingBar, float rating) {
-                Log.d(TAG, "BaseRatingBar onRatingChange: " + rating);
-            }
+          @Override
+          public void onRatingChange(BaseRatingBar ratingBar, float rating, boolean fromUser) {
+            Log.d(TAG, "BaseRatingBar onRatingChange: " + rating);
+          }
         });
         rotationRatingBar.setOnRatingDoneListener(new OnRatingDoneListener() {
-            @Override
-            public void onRatingDone(float rating) {
-                Log.d(TAG, "BaseRatingBar onRatingDone: " + rating);
-            }
+          @Override
+          public void onRatingDone(float rating) {
+            Log.d(TAG, "BaseRatingBar onRatingDone: " + rating);
+          }
         });
 
         Button addRatingButton = (Button) view.findViewById(R.id.button_main_add_rating);
